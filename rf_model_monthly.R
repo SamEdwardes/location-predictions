@@ -12,7 +12,7 @@ library(doParallel)
 
 
 # get data
-source("download_data.R")
+source("download_data_monthly.R")
 
 
 # Step 1: configure parallel processing
@@ -57,7 +57,7 @@ conf_out_sample$overall
 
 
 # save the model to disk (to read model use readRDS("model_rf.rds"))
-saveRDS(fit, "model_rf_daily.rds")
+saveRDS(fit, "model_rf_monthly.rds")
 
 
 

@@ -6,6 +6,7 @@ data/ghcnd*
 *.Rproj
 *.rds
 README.html
+*rsconnect/
 
 # History files
 .Rhistory

@@ -9,10 +9,6 @@
 
 library(shiny)
 library(leaflet)
-library(tidyverse)
-library(data.table)
-library(randomForest)
-library(caret)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -23,21 +19,16 @@ ui <- fluidPage(
   # Sidebar with a slider input for number of bins 
   sidebarLayout(
     sidebarPanel(
-      sliderInput("PRCP", "Preciptation", min = 0, max = 260, value = 24),
-      sliderInput("SNOW", "Snow", min = 0, max = 88, value = 0),
-      sliderInput("SNWD", "Snow Depth", min = 0, max = 200, value = 0),
-      sliderInput("TMAX", "Temperature Max", min = -30, max = 200, value = 70),
-      sliderInput("TMIN", "Temperature Min", min = --30, max = 200, value = 50),
-      numericInput("month", "Month", min = 1, max = 12, value = 7),
-      p("The source code for the app can be found on github:"),
-      a(href = "https://github.com/SamEdwardes/location-predictions", "GitHub.com/SamEdwardes/location-predictions")
+      sliderInput("PRCP", "Preciptation", min = 0, max = 1400, value = 24),
+      sliderInput("SNOW", "Snow", min = 0, max = 600, value = 7),
+      sliderInput("SNWD", "Snow Depth", min = 0, max = 3000, value = 0),
+      sliderInput("TMAX", "Temperature Max", min = -100, max = 200, value = 64),
+      sliderInput("TMIN", "Temperature Min", min = -100, max = 200, value = 64),
+      numericInput("month", "Month", min = 20190101, max = 20190711, value = 20190101)
     ),
     
     # Show a plot of the generated distribution
     mainPanel(
-      h3("Instructions"),
-      p("This tool was created as part of the Developing Data Products course from Coursera. The purpose of this tool is to demonstrate how Shiny can be used to deploy a data science project."),
-      p("To use the tool, adjust the sliders to the left, and the tool will automatically predict your location. Please note that the focus of this demo was on demonstrating how to use Shiny. The prediction algorithm has not been reviewed nor tested by anyone else, and will likely not produce reliable predictions."),
       h3("Prediction Inputs from Sidebar"),
       verbatimTextOutput("prediction_input"),
       h3("Prediction Results (station id)"),
@@ -46,6 +37,7 @@ ui <- fluidPage(
       verbatimTextOutput("prediction_result_cords"),
       h3("Map"),
       leafletOutput("map")
+      
     )
   )
 )
@@ -54,7 +46,7 @@ ui <- fluidPage(
 server <- function(input, output) {
   
   # load the model
-  model <- readRDS("model_rf_monthly.rds")
+  model <- readRDS("model_rf_daily.rds")
   
   
   # create the location prediction
@@ -65,9 +57,9 @@ server <- function(input, output) {
     SNWD <- input$SNWD
     TMAX <- input$TMAX
     TMIN <- input$TMIN
-    month <- input$month
+    date <- input$month
     # turn into dataframe
-    test <- data.frame(PRCP, SNOW, SNWD, TMAX, TMIN, month)
+    test <- data.frame(PRCP, SNOW, SNWD, TMAX, TMIN, date)
     test
   })
   
@@ -81,7 +73,7 @@ server <- function(input, output) {
   
   
   # load the station data to get coordinates
-  stations <- as_tibble(fread("cdn_stations.csv"))
+  stations <- as.tibble(fread("data/cdn_stations.csv"))
   
   
   # get the cordinates
@@ -110,7 +102,7 @@ server <- function(input, output) {
       leaflet() %>% 
       addTiles() %>%
       addMarkers(label = lapply(labs, htmltools::HTML)) %>%
-      fitBounds(-138, 50, -65, 61)
+      fitBounds(-126, 50, -65, 61)
     })
 
 }
