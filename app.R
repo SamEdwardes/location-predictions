@@ -8,41 +8,101 @@
 #
 
 library(shiny)
+library(leaflet)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-
-    # Application title
-    titlePanel("Old Faithful Geyser Data"),
-
-    # Sidebar with a slider input for number of bins 
-    sidebarLayout(
-        sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30)
-        ),
-
-        # Show a plot of the generated distribution
-        mainPanel(
-           plotOutput("distPlot")
-        )
+  
+  # Application title
+  titlePanel("Location Predictions Based on Weather"),
+  
+  # Sidebar with a slider input for number of bins 
+  sidebarLayout(
+    sidebarPanel(
+      numericInput("PRCP", "Preciptation", min = 0, max = 1400, value = 24),
+      numericInput("SNOW", "Snow", min = 0, max = 600, value = 7),
+      numericInput("SNWD", "Snow Depth", min = 0, max = 3000, value = 0),
+      numericInput("TMAX", "Temperature Max", min = -100, max = 200, value = 64),
+      numericInput("TMIN", "Temperature Min", min = -100, max = 200, value = 64),
+      sliderInput("month", "Month", min = 20190101, max = 20190711, value = 20190101)
+    ),
+    
+    # Show a plot of the generated distribution
+    mainPanel(
+      verbatimTextOutput("PRCP"),
+      verbatimTextOutput("SNOW"),
+      verbatimTextOutput("SNWD"),
+      verbatimTextOutput("TMAX"),
+      verbatimTextOutput("TMIN"),
+      verbatimTextOutput("month"),
+      h3("Prediction Inputs from Sidebar"),
+      verbatimTextOutput("prediction_input"),
+      h3("Prediction Results (station id)"),
+      verbatimTextOutput("prediction_result"),
+      h3("Prediction Result (station details"),
+      verbatimTextOutput("prediction_result_cords"),
+      h3("Map"),
+      leafletOutput("map", width = "100%", height = "100%")
+      
     )
+  )
 )
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
-
-    output$distPlot <- renderPlot({
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white')
-    })
+  
+  # print the input
+  output$PRCP <- renderPrint({input$PRCP})
+  output$SNOW <- renderPrint({input$SNOW})
+  output$SNWD <- renderPrint({input$SNWD})
+  output$TMAX <- renderPrint({input$TMAX})
+  output$TMIN <- renderPrint({input$TMIN})
+  output$month <- renderPrint({input$month})
+  
+  # load the model
+  model <- readRDS("model_rf_daily.rds")
+  
+  # create the location prediction
+  prediction_cordinates <- reactive({
+    # read the data
+    PRCP <- input$PRCP
+    SNOW <- input$SNOW
+    SNWD <- input$SNWD
+    TMAX <- input$TMAX
+    TMIN <- input$TMIN
+    date <- input$month
+    # turn into dataframe
+    test <- data.frame(PRCP, SNOW, SNWD, TMAX, TMIN, date)
+    test
+  })
+  
+  # predict the location
+  prediction_result <- reactive({
+    df <- prediction_cordinates()
+    prediction <- predict(model$finalModel, newdata = df, type = "class")
+    prediction
+  })
+  
+  # load the station data to get coordinates
+  stations <- as.tibble(fread("data/cdn_stations.csv"))
+  
+  # get the cordinates
+  prediction_result_cords <- reactive({
+    stations %>% filter(station.id == prediction_result())
+  })
+  
+  # Print the results
+  output$prediction_input <- renderPrint(prediction_cordinates())
+  output$prediction_result <- renderPrint(prediction_result())
+  output$prediction_result_cords <- renderPrint(prediction_result_cords())
+ 
+  # Creat the leaflet map
+  # output$map <- renderLeaflet({
+  #   leaflet(df_cords) %>% addTiles() %>% addMarkers()
+  # })
+  
+  
+  
 }
 
 # Run the application 
