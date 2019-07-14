@@ -12,7 +12,7 @@ Notes:
 
 - The application uses historical Canadian weather data to predict your location. The weather data was obtained from the [NOAA Global Historical Climatology Network - Daily table (GHCN-Daily)](https://data.nodc.noaa.gov/cgi-bin/iso?id=gov.noaa.ncdc:C00861). 
 - See [download_data_monthly.R](download_data.R) for the code describing how the data was downloaded and pre-processed to create the model.
-- See [rf_model_monthly.R](rf_model_monthly.R) for the code creating the model
+- See [rf_model_monthly.R](rf_model_monthly.R) for the code creating the model. Random Forests was used to create a classification model based on monthly average precipitation, snow, snow depth, min temperature, max temperature, and month of the year.
 
 ## Screenshot
 
