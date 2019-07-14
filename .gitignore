@@ -4,6 +4,7 @@ data/ghcnd*
 .DS_Store
 *.Rproj
 *.rds
+README.html
 
 # History files
 .Rhistory
