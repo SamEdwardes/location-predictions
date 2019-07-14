@@ -19,11 +19,11 @@ ui <- fluidPage(
   # Sidebar with a slider input for number of bins 
   sidebarLayout(
     sidebarPanel(
-      numericInput("PRCP", "Preciptation", min = 0, max = 1400, value = 24),
-      numericInput("SNOW", "Snow", min = 0, max = 600, value = 7),
-      numericInput("SNWD", "Snow Depth", min = 0, max = 3000, value = 0),
-      numericInput("TMAX", "Temperature Max", min = -100, max = 200, value = 64),
-      numericInput("TMIN", "Temperature Min", min = -100, max = 200, value = 64),
+      sliderInput("PRCP", "Preciptation", min = 0, max = 1400, value = 24),
+      sliderInput("SNOW", "Snow", min = 0, max = 600, value = 7),
+      sliderInput("SNWD", "Snow Depth", min = 0, max = 3000, value = 0),
+      sliderInput("TMAX", "Temperature Max", min = -100, max = 200, value = 64),
+      sliderInput("TMIN", "Temperature Min", min = -100, max = 200, value = 64),
       sliderInput("month", "Month", min = 20190101, max = 20190711, value = 20190101)
     ),
     
@@ -39,10 +39,10 @@ ui <- fluidPage(
       verbatimTextOutput("prediction_input"),
       h3("Prediction Results (station id)"),
       verbatimTextOutput("prediction_result"),
-      h3("Prediction Result (station details"),
+      h3("Prediction Result (station details)"),
       verbatimTextOutput("prediction_result_cords"),
       h3("Map"),
-      leafletOutput("map", width = "100%", height = "100%")
+      leafletOutput("map")
       
     )
   )
@@ -96,10 +96,32 @@ server <- function(input, output) {
   output$prediction_result <- renderPrint(prediction_result())
   output$prediction_result_cords <- renderPrint(prediction_result_cords())
  
-  # Creat the leaflet map
-  # output$map <- renderLeaflet({
-  #   leaflet(df_cords) %>% addTiles() %>% addMarkers()
+  
+  # creating the leaflet map
+  output$map <- renderLeaflet({
+    # get prediction result cordinates
+    df <- prediction_result_cords()
+    #create content popup
+    df$label <- paste0(paste0("<p>", "Station Name: ", as.character(df$station.name), "<p></p>"),
+                       paste0("<p>", "Station ID: ", as.character(df$station.id), "<p></p>"),
+                       paste0("<p>", "Lat/Lon: ", as.character(df$Lat)," , ", as.character(df$Lon), "<p></p>"))
+    labs <- df$label
+    #create the map
+    df %>%
+      leaflet() %>% 
+      addTiles() %>%
+      addMarkers(label = lapply(labs, htmltools::HTML)) %>%
+      fitBounds(-126, 50, -65, 61)
+    })
+  
+  # # Creat the leaflet map
+  # create_map <- reactive({
+  #   df <- prediction_result_cords()
+  #   df %>% leaflet() %>% addTiles() %>% addMarkers()
   # })
+  # 
+  # # print the leaflet map
+  # output$map <- renderLeaflet(create_map())
   
   
   
