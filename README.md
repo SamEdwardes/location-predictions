@@ -8,6 +8,8 @@ The purpose of this tool is to demonstrate how Shiny can be used to deploy a dat
 
 The tool can be found hosted on [shinyapps.io](https://samedwardes.shinyapps.io/location-predictions/).
 
+The pitch deck that was required to be submitted can be found here [GitHub Pages](https://samedwardes.github.io/location-predictions/pitch.html#)
+
 Notes:
 
 - The application uses historical Canadian weather data to predict your location. The weather data was obtained from the [NOAA Global Historical Climatology Network - Daily table (GHCN-Daily)](https://data.nodc.noaa.gov/cgi-bin/iso?id=gov.noaa.ncdc:C00861). 
