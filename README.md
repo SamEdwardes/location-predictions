@@ -6,7 +6,7 @@ This repo was created for the Coursera / John Hopkins University course on [Deve
 
 The purpose of this tool is to demonstrate how Shiny can be used to deploy a data science project. To use the tool, adjust the sliders to the left, and the tool will automatically predict your location. Please note that the focus of this demo was on demonstrating how to use Shiny. The prediction algorithm has not been reviewed nor tested by anyone else, and will likely not produce reliable predictions.
 
-- The tool can be found hosted on [shinyapps.io](https://samedwardes.shinyapps.io/location-predictions/).
+- The tool can be found hosted on [shinyapps.io](https://samedwardes.shinyapps.io/location-predictions/)
 - The pitch deck that was required to be submitted can be found here [GitHub Pages](https://samedwardes.github.io/location-predictions/pitch.html)
 
 Notes:
