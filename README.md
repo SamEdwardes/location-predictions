@@ -8,7 +8,7 @@ The purpose of this tool is to demonstrate how Shiny can be used to deploy a dat
 
 The tool can be found hosted on [shinyapps.io](https://samedwardes.shinyapps.io/location-predictions/).
 
-The pitch deck that was required to be submitted can be found here [GitHub Pages](https://samedwardes.github.io/location-predictions/pitch.html#)
+The pitch deck that was required to be submitted can be found here [GitHub Pages](https://samedwardes.github.io/location-predictions/pitch.html)
 
 Notes:
 
