@@ -28,7 +28,7 @@ ui <- fluidPage(
       sliderInput("SNWD", "Snow Depth", min = 0, max = 200, value = 0),
       sliderInput("TMAX", "Temperature Max", min = -30, max = 200, value = 70),
       sliderInput("TMIN", "Temperature Min", min = --30, max = 200, value = 50),
-      numericInput("month", "Month", min = 1, max = 12, value = 7),
+      numericInput("month", "Month", min = 1, max = 7, value = 7),
       p("The source code for the app can be found on github:"),
       a(href = "https://github.com/SamEdwardes/location-predictions", "GitHub.com/SamEdwardes/location-predictions")
     ),
@@ -37,7 +37,7 @@ ui <- fluidPage(
     mainPanel(
       h3("Instructions"),
       p("This tool was created as part of the Developing Data Products course from Coursera. The purpose of this tool is to demonstrate how Shiny can be used to deploy a data science project."),
-      p("To use the tool, adjust the sliders to the left, and the tool will automatically predict your location. Please note that the focus of this demo was on demonstrating how to use Shiny. The prediction algorithm has not been reviewed nor tested by anyone else, and will likely not produce reliable predictions."),
+      p("To use the tool, adjust the sliders to the left, and the tool will automatically predict your location. Please note that the focus of this demo was on demonstrating how to use Shiny. The prediction algorithm has not been reviewed nor tested by anyone else, and will likely not produce reliable predictions. The model was build on Canadian weather station data from January 2019 to July 2019."),
       h3("Prediction Inputs from Sidebar"),
       verbatimTextOutput("prediction_input"),
       h3("Prediction Results (station id)"),

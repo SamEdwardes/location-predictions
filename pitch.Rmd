@@ -1,0 +1,54 @@
+---
+title: "Weather Based Location Predictions"
+author: "Sam Edwardes"
+date: '2019-07-14'
+output:
+  ioslides_presentation: default
+  slidy_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Background
+
+Have you ever wondered if you can predict someones location by the weather? Finally, there is a tool to do so. The weather based location prediction app works by using the following monthly average parameters to predict your location:
+
+- precipitation
+- snow
+- snow depth
+- min temperature 
+- max temperature
+- month of the year
+
+## The Model
+
+```{r load_data, warnings=FALSE, message=FALSE}
+library(data.table)
+station <- fread("cdn_stations.csv")
+weather <- fread("monthly_weather.csv")
+```
+
+A random forest classifcation model was built using data from the [NOAA Global Historical Climatology Network - Daily table (GHCN-Daily)](https://data.nodc.noaa.gov/cgi-bin/iso?id=gov.noaa.ncdc:C00861). The data was filtered to only include Canadian weather stations. Data from `r length(unique(weather$station.id))` stations was used to create the prediction model.
+
+```{r weather_summary1}
+summary(weather)
+```
+
+## Weather Stations
+
+The interactive leaflet map shows the location of each station.
+
+```{r map, warning=FALSE, message=FALSE}
+library(leaflet)
+selected_stations <- unique(weather$station.id)
+map <- subset(station, station.id %in% selected_stations) %>% leaflet() %>% addTiles() %>% addMarkers()
+map
+```
+
+## Use the model
+
+To try out the model visit [shinyapps.io](https://samedwardes.shinyapps.io/location-predictions/).
+
+![](https://i.imgur.com/OFrmF11.png?1){width=65%}

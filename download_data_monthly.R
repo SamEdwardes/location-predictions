@@ -74,7 +74,7 @@ df_select_cols <- df_select_cols %>%
   mutate(month = as.integer(substr(date, 5,6))) %>%
   group_by(station.id, month) %>%
   summarise(PRCP = mean(PRCP), SNOW = mean(SNOW), SNWD = mean(SNWD), TMAX = mean(TMAX), TMIN = mean(TMIN))
-head(df_weather)
+head(select_cols)
 
 
 # partition the data
